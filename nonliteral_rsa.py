@@ -333,11 +333,11 @@ if __name__ == '__main__':
 	A = np.array([0, 1, 2])
 	lex = np.identity(len(U))
 	# s_prior[s] = P(s)
-	s_prior = np.array([0.1, 0.89, 0.01])
+	s_prior = np.array([0.01, 0.985, 0.005])
 	# as_prior[s][a] = P(a|s)
 	as_prior = np.array(
-				[[0.3, 0.01, 0.69],
-				 [0.89, 0.1, 0.01],
+				[[0.01, 0.01, 0.98],
+				 [0.89, 0.07, 0.04],
 				 [0.01, 0.98, 0.01]]
 			   )
 
