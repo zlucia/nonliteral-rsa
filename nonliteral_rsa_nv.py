@@ -158,14 +158,14 @@ class NonliteralNumberRSANV():
 			return self.sharp_cost
 	
 	def P_G(self, g):
-		"""Returns the probability of a particular conversational goal. Based on Kao et al. (2014),
+		"""Returns the probability of a particular communicative goal. Based on Kao et al. (2014),
 		we implement this as a uniform prior.
 		"""
 		return 1 / len(self.goals())
 
 	def goals(self):
-		"""Returns a list corresponding to the different conversational goals described in Kao et al. (2014).
-		   This function returns conversational goals represented by functions of all possible combinations of 
+		"""Returns a list corresponding to the different communicative goals described in Kao et al. (2014).
+		   This function returns communicative goals represented by functions of all possible combinations of 
 		   three  possible functions r from state, affect to [state, None], [None, affect] or [state, affect] and 
 		   two functions f from state to exact or approximate state.
 		"""
@@ -185,7 +185,7 @@ class NonliteralNumberRSANV():
 				lambda s: self.Round(s)]
 
 	def Round(self, x):
-		"""Returns a rounded version of utterances for the approximate state conversational goal, rounded to self.precision
+		"""Returns a rounded version of utterances for the approximate state communicative goal, rounded to self.precision
 		   number of digits
 		"""
 		return np.around(x, -self.precision)

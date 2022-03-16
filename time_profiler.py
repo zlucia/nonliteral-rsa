@@ -46,5 +46,5 @@ if __name__ == '__main__':
 	plt.xlabel("Number of States / Utterances")
 	plt.ylabel("Time (seconds)")
 	plt.legend(title="Nonliteral RSA Implementation")
-	plt.savefig('time/time_comparison.png')
+	# plt.savefig('time/time_comparison.png')
 	# plt.show()
