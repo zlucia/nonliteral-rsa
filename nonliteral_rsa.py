@@ -94,7 +94,7 @@ class NonliteralNumberRSA():
 		# C(u): if utterance is a rounded number, round cost, otherwise, sharp cost
 		C = np.where(self.utterances == round_utterances, self.round_cost, self.sharp_cost)
 
-		# Possible conversational goals
+		# Possible communicative goals
 		goals = self.goals()
 
 		# Cache of g(s, a), for each goal g
@@ -137,7 +137,7 @@ class NonliteralNumberRSA():
 		# shape: (|U|, |S|, |A|, |G|)
 		pragmatic_speaker_T = pragmatic_speaker.transpose(3, 2, 1, 0)
 
-		# Possible conversational goals
+		# Possible communicative goals
 		goals = self.goals()
 
 		# L_1(s, a, u): pragmatic listener's joint probability of a state s, affect a, utterance u, for each s, a, u
@@ -156,7 +156,7 @@ class NonliteralNumberRSA():
 		return pragmatic_listener
 
 	def gsa_each_g(self, goals):
-		"""Returns the function mapping of (s, a) input pairs under conversational goal function g, for each goal g
+		"""Returns the function mapping of (s, a) input pairs under communicative goal function g, for each goal g
 		"""
 		gsa_each_g = np.zeros((len(goals), self.affects.shape[0], self.states.shape[0], self.interpretation_space_dims), dtype=object)
 		for i in range(len(goals)):
@@ -181,14 +181,14 @@ class NonliteralNumberRSA():
 		return goal_indicator
 
 	def P_G(self):
-		"""Returns the probability of a particular conversational goal. Based on Kao et al. (2014),
+		"""Returns the probability of a particular communicative goal. Based on Kao et al. (2014),
 		we implement this as a uniform prior.
 		"""
 		return 1 / len(self.goals())
 
 	def goals(self):
-		"""Returns a list corresponding to the different conversational goals described in Kao et al. (2014).
-		   This function returns conversational goals represented by functions of all possible combinations of 
+		"""Returns a list corresponding to the different communicative goals described in Kao et al. (2014).
+		   This function returns communicative goals represented by functions of all possible combinations of 
 		   three  possible functions r from state, affect to [state, None], [None, affect] or [state, affect] and 
 		   two functions f from state to exact or approximate state.
 		"""
@@ -208,12 +208,12 @@ class NonliteralNumberRSA():
 				lambda s: self.Round(s)]
 
 	def Round(self, x):
-		"""Returns a rounded version of utterances for the approximate state conversational goal, rounded to self.precision
-		   number of digits
+		"""Returns a rounded version of utterances for the approximate state communicative goal, rounded to self.precision
+		   number of decimals
 		"""
 		return np.around(x, -self.precision)
 
-	def display_listener(self, listener, title, visual, save, path):
+	def display_listener(self, listener, title, visual, save=False, path=None):
 		"""Display the probability distribution for a listener. If visual=True, displays heatmap of interpretation probabilities.
 		   Otherwise, displays table of interpretation probabilities.
 		"""
@@ -256,7 +256,7 @@ class NonliteralNumberRSA():
 			else:
 				plt.show()
 
-	def display_speaker(self, speaker, title, visual, save, path):
+	def display_speaker(self, speaker, title, visual, save=False, path=None):
 		"""Displays the probability distribution for a speaker. If visual=True, displays heatmap of interpretation probabilities.
 		   Otherwise, displays table of interpretation probabilities.
 		"""
@@ -321,8 +321,31 @@ if __name__ == '__main__':
 	rsa = NonliteralNumberRSA(lexicon=lex, utterances=U, states=S, affects=A, s_prior=s_prior, 
 							  as_prior=as_prior, round_cost=1, sharp_cost=5, precision=1)
 
-	rsa.display_listener(rsa.literal_listener(), title="Literal Listener", visual=True, save=True, path="basic/literal_listener.png")
-	rsa.display_speaker(rsa.pragmatic_speaker(), title="Pragmatic Speaker", visual=True, save=True, path="basic/pragmatic_speaker.png")
-	rsa.display_listener(rsa.pragmatic_listener(), title="Pragmatic Listener", visual=True, save=True, path="basic/pragmatic_listener.png")
+	rsa.display_listener(rsa.literal_listener(), title="Literal Listener", visual=True, save=True, path='basic/literal_listener.png')
+	rsa.display_speaker(rsa.pragmatic_speaker(), title="Pragmatic Speaker", visual=True, save=True, path='basic/pragmatic_speaker.png')
+	rsa.display_listener(rsa.pragmatic_listener(), title="Pragmatic Listener", visual=True, save=True, path='basic/pragmatic_listener.png')
+
+	# Uncomment the following lines to run nonliteral RSA for a hyperbolic utterance involving positive attitudes
+	# Model hyperbolic utterances involving positive attitudes with an additional affect value a = 2, A = {0, 1, 2}
+	# Core lexicon
+	U = np.array([0, 50, 10000])
+	S = np.array([0, 50, 10000])
+	A = np.array([0, 1, 2])
+	lex = np.identity(len(U))
+	# s_prior[s] = P(s)
+	s_prior = np.array([0.1, 0.89, 0.01])
+	# as_prior[s][a] = P(a|s)
+	as_prior = np.array(
+				[[0.3, 0.01, 0.69],
+				 [0.89, 0.1, 0.01],
+				 [0.01, 0.98, 0.01]]
+			   )
+
+	rsa = NonliteralNumberRSA(lexicon=lex, utterances=U, states=S, affects=A, s_prior=s_prior, 
+							  as_prior=as_prior, round_cost=1, sharp_cost=5, precision=1)
+
+	rsa.display_listener(rsa.literal_listener(), title="Literal Listener", visual=True, save=True, path='positive/literal_listener.png')
+	rsa.display_speaker(rsa.pragmatic_speaker(), title="Pragmatic Speaker", visual=True, save=True, path='positive/pragmatic_speaker.png')
+	rsa.display_listener(rsa.pragmatic_listener(), title="Pragmatic Listener", visual=True, save=True, path='positive/pragmatic_listener.png')
 
 
